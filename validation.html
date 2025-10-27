@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Interactive Form Validation Example</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 30px; }
+    form { max-width: 400px; }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; }
+    input { width: 100%; padding: 8px; box-sizing: border-box; }
+    .error { color: red; font-size: 0.9em; display: none; }
+    input.invalid { border: 2px solid red; }
+    input.valid { border: 2px solid green; }
+    button { padding: 10px 20px; }
+  </style>
+</head>
+<body>
+  <h2>Register</h2>
+  <form id="registerForm" novalidate>
+    <div class="form-group">
+      <label for="username">Username (required):</label>
+      <input type="text" id="username" name="username" required>
+      <span class="error" id="usernameError">Username is required.</span>
+    </div>
+    <div class="form-group">
+      <label for="email">Email (required):</label>
+      <input type="email" id="email" name="email" required>
+      <span class="error" id="emailError">Please enter a valid email.</span>
+    </div>
+    <div class="form-group">
+      <label for="password">Password (min 6 chars):</label>
+      <input type="password" id="password" name="password" required minlength="6">
+      <span class="error" id="passwordError">Password must be at least 6 characters.</span>
+    </div>
+    <button type="submit">Register</button>
+  </form>
+
+  <script>
+    // Helper functions
+    function showError(input, errorId, message) {
+      input.classList.remove('valid');
+      input.classList.add('invalid');
+      const errorElem = document.getElementById(errorId);
+      errorElem.textContent = message;
+      errorElem.style.display = 'block';
+    }
+
+    function showValid(input, errorId) {
+      input.classList.remove('invalid');
+      input.classList.add('valid');
+      document.getElementById(errorId).style.display = 'none';
+    }
+
+    // Validation logic
+    const form = document.getElementById('registerForm');
+    const username = document.getElementById('username');
+    const email = document.getElementById('email');
+    const password = document.getElementById('password');
+
+    username.addEventListener('input', function() {
+      if (username.value.trim() === '') {
+        showError(username, 'usernameError', 'Username is required.');
+      } else {
+        showValid(username, 'usernameError');
+      }
+    });
+
+    email.addEventListener('input', function() {
+      const emailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+      if (!emailPattern.test(email.value.trim())) {
+        showError(email, 'emailError', 'Please enter a valid email.');
+      } else {
+        showValid(email, 'emailError');
+      }
+    });
+
+    password.addEventListener('input', function() {
+      if (password.value.length < 6) {
+        showError(password, 'passwordError', 'Password must be at least 6 characters.');
+      } else {
+        showValid(password, 'passwordError');
+      }
+    });
+
+    form.addEventListener('submit', function(e) {
+      let valid = true;
+
+      if (username.value.trim() === '') {
+        showError(username, 'usernameError', 'Username is required.');
+        valid = false;
+      }
+      const emailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+      if (!emailPattern.test(email.value.trim())) {
+        showError(email, 'emailError', 'Please enter a valid email.');
+        valid = false;
+      }
+      if (password.value.length < 6) {
+        showError(password, 'passwordError', 'Password must be at least 6 characters.');
+        valid = false;
+      }
+
+      if (!valid) {
+        e.preventDefault();
+      } else {
+        alert('Form submitted successfully!');
+      }
+    });
+  </script>
+</body>
+</html>
